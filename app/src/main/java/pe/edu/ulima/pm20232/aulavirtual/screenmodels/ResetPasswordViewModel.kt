@@ -70,8 +70,6 @@ class ResetPasswordViewModel(private val context: Context) : ViewModel() {
                 e.printStackTrace()
             }
         }
-        message=""
-        DNI=""
-        Correo=""
+
     }
 }
