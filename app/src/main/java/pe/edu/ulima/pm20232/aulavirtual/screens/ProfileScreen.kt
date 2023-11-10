@@ -1,12 +1,8 @@
 package pe.edu.ulima.pm20232.aulavirtual.screens
 
-import android.app.Instrumentation
 import android.content.*
-import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -14,13 +10,9 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -29,7 +21,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import coil.ImageLoader
@@ -39,13 +30,7 @@ import coil.request.SuccessResult
 import coil.transform.CircleCropTransformation
 import kotlinx.coroutines.launch
 import pe.edu.ulima.pm20232.aulavirtual.AdminActivity
-import pe.edu.ulima.pm20232.aulavirtual.models.Pokemon
 import pe.edu.ulima.pm20232.aulavirtual.screenmodels.ProfileScreenViewModel
-import pe.edu.ulima.pm20232.aulavirtual.services.PokemonService
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
 import java.util.*
 
 @Composable

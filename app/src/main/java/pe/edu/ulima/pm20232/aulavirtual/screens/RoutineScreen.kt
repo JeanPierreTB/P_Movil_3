@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -45,7 +45,7 @@ fun RoutineGrid(navController: NavController, model: RoutineScreenViewModel){
     //val pokemons by model.pokemons.collectAsState()
     val exercises by model.exercises.collectAsState()
     LazyVerticalGrid(
-        cells = GridCells.Fixed(4) // Specify the number of columns
+        columns = GridCells.Fixed(4) // Specify the number of columns
     ) {
         items(exercises.size) { i ->
             Column(){

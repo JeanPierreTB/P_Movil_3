@@ -1,7 +1,5 @@
 package pe.edu.ulima.pm20232.aulavirtual.screens
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -33,7 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pe.edu.ulima.pm20232.aulavirtual.R
 import pe.edu.ulima.pm20232.aulavirtual.components.ButtonWithIcon
-import pe.edu.ulima.pm20232.aulavirtual.components.CheckboxWithLabel
 import pe.edu.ulima.pm20232.aulavirtual.components.TextFieldWithLeadingIcon
 import pe.edu.ulima.pm20232.aulavirtual.screenmodels.LoginScreenViewModel
 import pe.edu.ulima.pm20232.aulavirtual.ui.theme.*
@@ -137,7 +134,7 @@ fun LoginForm(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
-                    Text1(text ="Bienvenido al Sistema", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text1(text ="INGRESA ESTA INFORMACIÓN", fontSize = 15.sp,color = Color.DarkGray)
                     TextFieldWithLeadingIcon(
                         leadingIcon = Icons.Default.Person, // Replace with your desired icon
                         placeholder = "Usuario",
@@ -159,14 +156,36 @@ fun LoginForm(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 25.dp),
+                            .padding(top = 2.dp),
                         horizontalArrangement = Arrangement.Center,
                     ){
-                        ButtonWithIcon("INGRESAR", Icons.Default.Person, {
+                        ButtonWithIcon("LOGIN", Icons.Default.Person,{
                             viewModel.access(navController)
                         })
                     }
-                    CheckboxWithLabel(
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp)
+                    ) {
+
+                        Text1(text = "No tienes una cuenta? ", textAlign = TextAlign.End, color = Gray800, fontSize = 16.sp)
+                        Text1(
+                            text = "Créala aquí",
+                            textAlign = TextAlign.End,
+                            color = Orange400,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.clickable {
+                                println("Crear_Cuenta")
+                                navController.navigate("register")
+                            },
+
+                            )
+                    }
+
+                    /*CheckboxWithLabel(
                         label = "Términos y Condiciones",
                         isChecked = viewModel.termsAndConditionsChecked,
                         onCheckedChange = {
@@ -187,7 +206,7 @@ fun LoginForm(
                             }
                         },
                         disabled = termsDisabled,
-                    )
+                    )*/
                 }
             }
         }

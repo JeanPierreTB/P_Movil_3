@@ -1,9 +1,8 @@
 package pe.edu.ulima.pm20232.aulavirtual.screenmodels
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import android.content.Context
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,13 +11,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import pe.edu.ulima.pm20232.aulavirtual.configs.BackendClient
-import android.content.SharedPreferences
-import pe.edu.ulima.pm20232.aulavirtual.services.UserService2
 import org.json.JSONObject
-import pe.edu.ulima.pm20232.aulavirtual.configs.HttpStdResponse
+import pe.edu.ulima.pm20232.aulavirtual.configs.BackendClient
+import pe.edu.ulima.pm20232.aulavirtual.services.UserService2
 import pe.edu.ulima.pm20232.aulavirtual.storages.UserStorage
-import java.util.concurrent.Flow
 
 
 class LoginScreenViewModel(private val context: Context): ViewModel() {
@@ -43,6 +39,7 @@ class LoginScreenViewModel(private val context: Context): ViewModel() {
             try {
                 withContext(Dispatchers.IO) {
                     val response = userService.findOne(user, password)?.execute()
+                    println(response)
                     if (response != null) {
                         if (response.body()!!.success == true) {
                             val responseData = response.body()!!
@@ -58,6 +55,7 @@ class LoginScreenViewModel(private val context: Context): ViewModel() {
                             }
                         } else {
                             // Maneja errores
+                            println("Failed")
                             message = response.body()!!.message
                         }
                     }

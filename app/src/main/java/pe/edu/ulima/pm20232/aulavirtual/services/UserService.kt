@@ -55,7 +55,7 @@ class UserService {
 
 interface UserService2 {
     @FormUrlEncoded
-    @POST("user/validate")
+    @POST("/user/validate")
     fun findOne(
         @Field("user") name: String?,
         @Field("password") age: String?

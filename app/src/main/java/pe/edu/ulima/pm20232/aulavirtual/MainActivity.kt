@@ -1,26 +1,43 @@
 package pe.edu.ulima.pm20232.aulavirtual
 
-import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,8 +51,20 @@ import pe.edu.ulima.pm20232.aulavirtual.components.TopNavigationBar
 import pe.edu.ulima.pm20232.aulavirtual.configs.BottomBarScreen
 import pe.edu.ulima.pm20232.aulavirtual.configs.TopBarScreen
 import pe.edu.ulima.pm20232.aulavirtual.factories.LoginScreenViewModelFactory
-import pe.edu.ulima.pm20232.aulavirtual.screenmodels.*
-import pe.edu.ulima.pm20232.aulavirtual.screens.*
+import pe.edu.ulima.pm20232.aulavirtual.screenmodels.HomeScreenViewModel
+import pe.edu.ulima.pm20232.aulavirtual.screenmodels.LoginScreenViewModel
+import pe.edu.ulima.pm20232.aulavirtual.screenmodels.PokemonDetailScreenViewModel
+import pe.edu.ulima.pm20232.aulavirtual.screenmodels.ProfileScreenViewModel
+import pe.edu.ulima.pm20232.aulavirtual.screenmodels.RoutineScreenViewModel
+import pe.edu.ulima.pm20232.aulavirtual.screens.HomeScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.LoginScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.PokemonDetailScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.PokemonScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.ProfileScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.ResetPasswordScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.RoutineDetailScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.RoutineScreen
+import pe.edu.ulima.pm20232.aulavirtual.screens.SplashScreen
 import pe.edu.ulima.pm20232.aulavirtual.storages.UserStorage
 import pe.edu.ulima.pm20232.aulavirtual.ui.theme.AulaVirtualTheme
 
@@ -65,7 +94,21 @@ class MainActivity : ComponentActivity() {
                     val blackList: List<String> = listOf("profile", "login")
                     val currentRoute = navBackStackEntry?.destination?.route
                     var showDialog by remember { mutableStateOf(false) }
+                    var showShare by remember { mutableStateOf(false) }
                     val dataStore = UserStorage(applicationContext)
+
+                    var imageUri by remember { mutableStateOf<Uri?>(null) }
+                    val launcher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.GetContent()){ uri: Uri? ->
+                        imageUri = uri
+                    }
+                    val launcherImage = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.StartActivityForResult(),
+                        onResult = {
+                            Log.d("POKEMON_DETAIL_SCREEN", "onResult")
+                        }
+                    )
+                    val context = LocalContext.current
                     Scaffold(
                         topBar = {
                             if(
@@ -73,46 +116,67 @@ class MainActivity : ComponentActivity() {
                                 dataStore.getUserId.collectAsState(initial = 0).value != 0
                                 ) {
                                 val screens: List<TopBarScreen> = listOf(
-                                    TopBarScreen(
+                                    /*TopBarScreen(
                                         route = "home",
                                         title = "Home",
-                                    ),
+                                    ),*/
                                     TopBarScreen(
-                                        route = "profile",
-                                        title = "Ver Perfíl",
+                                        route = "ver_perfil",
+                                        title = "Ver Perfil",
                                     ),
-                                    TopBarScreen(
+                                    /*TopBarScreen(
                                         route = "pokemon",
                                         title = "Ver Pokemones",
+                                    ),*/
+                                    TopBarScreen(
+                                        title = "Acerca de",
+                                        onClick = {
+                                            Log.d("MAIN_ACTIVITY","PROFILE!!")
+                                            showDialog = true
+                                        }
                                     ),
                                     TopBarScreen(
-                                        route = "sign_out",
                                         title = "Cerrar Sesión",
+                                        onClick = {
+                                            Log.d("MAIN_ACTIVITY","Cerrar Sesión!!")
+                                            finishAffinity()
+                                        }
                                     ),
-                                )
+
+                                    )
                                 TopNavigationBar(navController, screens, this, dataStore)
+
                             }
                         },
                         bottomBar = {
                             if(blackList.contains(currentRoute) == false || dataStore.getUserId.collectAsState(initial = 0).value != 0) {
                                 val screens: List<BottomBarScreen> = listOf(
                                     BottomBarScreen(
-                                        route = "home",
-                                        title = "Home",
-                                        icon = Icons.Default.Home
-                                    ),
-                                    BottomBarScreen(
                                         route = "profile",
-                                        title = "Profile",
-                                        icon = Icons.Default.Person
+                                        title = "Mi Rutina",
+                                        icon = Icons.Default.DateRange,
+                                        onClick = {
+                                            homeScrennViewModel.filtrar = true
+                                        }
                                     ),
                                     BottomBarScreen(
-                                        route = "settings",
-                                        title = "Settings",
-                                        icon = Icons.Default.Settings
+                                        route = "home",
+                                        title = "Ejercicios",
+                                        icon = Icons.Default.List,
+                                        onClick = {
+                                            homeScrennViewModel.filtrar = false
+                                        }
+                                    ),
+                                    BottomBarScreen(
+                                        title = "Compartir",
+                                        icon = Icons.Default.Share,
+                                        onClick = {
+                                            showShare = true
+                                        }
                                     ),
                                 )
                                 BottomNavigationBar(navController = navController, screens)
+
                             }
                         },
                         content = {
@@ -173,6 +237,70 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
 
+                            if (showShare) {
+                                AlertDialog(
+                                    onDismissRequest = {
+                                        showShare = false
+                                    },
+                                    title = {
+                                        Text(
+                                            text = "Gracias por compartir",
+                                            color = Color.Black,
+                                            fontSize = 24.sp,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    },
+                                    text = {
+                                        /*
+                                        val imageUrl = "https://cdn-icons-png.flaticon.com/512/1384/1384095.png"
+                                        val uri = Uri.parse(imageUrl)
+                                        val painter = rememberImagePainter(
+                                            data = uri.scheme + "://" + uri.host + uri.path + (if (uri.query != null) uri.query else ""),
+                                            builder = {
+                                                // You can apply transformations here if needed
+                                                transformations(CircleCropTransformation())
+                                            }
+                                        )
+                                        */
+                                        Column(){
+
+                                            Row(){
+                                                //Facebook
+                                                Button(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(top = 1.dp, /*start = 40.dp, end = 40.dp*/),
+                                                    onClick = {
+                                                        val intent = Intent(Intent.ACTION_SEND)
+                                                        intent.type = "image/jpg"
+                                                        val appPackage = "com.facebook.katana"
+                                                        val nombre = "XD"
+                                                        intent.putExtra(Intent.EXTRA_TITLE, "Has seleccionado un $nombre")
+                                                        intent.putExtra(Intent.EXTRA_TEXT, imageUri)
+                                                        launcherImage.launch(intent)
+                                                        intent.setPackage(appPackage)
+                                                        if(intent.resolveActivity(context.packageManager) != null){
+                                                            launcherImage.launch(intent)
+                                                        }
+                                                    },
+
+                                                    ){
+                                                    Text(
+                                                        "Compartir en Facebook",
+                                                    )
+                                                }
+
+                                            }
+                                        }
+                                    },
+                                    confirmButton = {
+
+                                    },
+                                    dismissButton = {
+
+                                    }
+                                )
+                            }
                             NavHost(navController, startDestination = "login") {
                                 composable(route = "splash") {
                                     SplashScreen {

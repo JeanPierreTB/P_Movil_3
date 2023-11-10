@@ -1,8 +1,8 @@
 package pe.edu.ulima.pm20232.aulavirtual.screenmodels
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +11,6 @@ import pe.edu.ulima.pm20232.aulavirtual.models.Exercise
 import pe.edu.ulima.pm20232.aulavirtual.models.Pokemon
 import pe.edu.ulima.pm20232.aulavirtual.services.BodyPartService
 import pe.edu.ulima.pm20232.aulavirtual.services.ExerciseService
-import pe.edu.ulima.pm20232.aulavirtual.services.PokemonService
 
 class HomeScreenViewModel: ViewModel(){
     //var pokemons = mutableStateListOf<Pokemon>()
@@ -63,6 +62,10 @@ class HomeScreenViewModel: ViewModel(){
     }
 
     private var _exercises = MutableStateFlow<List<Exercise>>(emptyList())
+    var filtrar: Boolean by mutableStateOf(true)
+    var userId: Int by mutableStateOf(0)
+
+
     val exercises: StateFlow<List<Exercise>> get() = _exercises
     fun setExercises(newItems: List<Exercise>) {
         _exercises.value = newItems
