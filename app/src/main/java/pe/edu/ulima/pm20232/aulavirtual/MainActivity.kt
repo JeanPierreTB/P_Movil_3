@@ -34,6 +34,8 @@ import pe.edu.ulima.pm20232.aulavirtual.components.TopNavigationBar
 import pe.edu.ulima.pm20232.aulavirtual.configs.BottomBarScreen
 import pe.edu.ulima.pm20232.aulavirtual.configs.TopBarScreen
 import pe.edu.ulima.pm20232.aulavirtual.factories.LoginScreenViewModelFactory
+import pe.edu.ulima.pm20232.aulavirtual.factories.RegisterViewModelFactory
+import pe.edu.ulima.pm20232.aulavirtual.factories.ResetPasswordViewModelFactory
 import pe.edu.ulima.pm20232.aulavirtual.screenmodels.*
 import pe.edu.ulima.pm20232.aulavirtual.screens.*
 import pe.edu.ulima.pm20232.aulavirtual.storages.UserStorage
@@ -42,6 +44,12 @@ import pe.edu.ulima.pm20232.aulavirtual.ui.theme.AulaVirtualTheme
 class MainActivity : ComponentActivity() {
     private val loginScrennViewModel: LoginScreenViewModel by viewModels {
         LoginScreenViewModelFactory(applicationContext)
+    }
+    private val resetPasswordViewModel:ResetPasswordViewModel by viewModels {
+        ResetPasswordViewModelFactory(applicationContext)
+    }
+    private val registerViewModel:RegisterViewModel by viewModels {
+        RegisterViewModelFactory(applicationContext)
     }
     private val profileScrennViewModel by viewModels<ProfileScreenViewModel>()
     private val homeScrennViewModel by viewModels<HomeScreenViewModel>()
@@ -69,8 +77,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         topBar = {
                             if(
-                                blackList.contains(currentRoute) == false ||
-                                dataStore.getUserId.collectAsState(initial = 0).value != 0
+                                currentRoute !in listOf("reset", "login","register","profile")
                                 ) {
                                 val screens: List<TopBarScreen> = listOf(
                                     TopBarScreen(
@@ -94,7 +101,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         bottomBar = {
-                            if(blackList.contains(currentRoute) == false || dataStore.getUserId.collectAsState(initial = 0).value != 0) {
+                            if(currentRoute !in listOf("reset", "login","register","profile")) {
                                 val screens: List<BottomBarScreen> = listOf(
                                     BottomBarScreen(
                                         route = "home",
@@ -187,9 +194,9 @@ class MainActivity : ComponentActivity() {
                                     Log.d("POKEMON", "pokemons screen")
                                     PokemonScreen(navController)
                                 }
-                                composable(route = "reset_password") {
-                                    Log.d("ROUTER", "reset password")
-                                    ResetPasswordScreen(navController)
+                                composable(route = "reset") {
+                                    Log.d("ROUTER", "reset")
+                                    ResetPasswordScreen(resetPasswordViewModel,navController)
                                 }
                                 composable(route = "profile") {
                                     Log.d("ROUTER", "profile")
@@ -198,6 +205,9 @@ class MainActivity : ComponentActivity() {
                                 composable(route = "routine_detail") {
                                     Log.d("ROUTER", "routine_detail")
                                     RoutineDetailScreen(navController, routineScreenViewModel)
+                                }
+                                composable(route = "register") {
+                                    RegisterScreen(registerViewModel, navController)
                                 }
                                 composable(route = "routine?user_id={user_id}&member_id={member_id}", arguments = listOf(
                                     navArgument("user_id") {

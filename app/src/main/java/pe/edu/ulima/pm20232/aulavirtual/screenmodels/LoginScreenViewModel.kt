@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pe.edu.ulima.pm20232.aulavirtual.configs.BackendClient
 import android.content.SharedPreferences
+import kotlinx.coroutines.delay
 import pe.edu.ulima.pm20232.aulavirtual.services.UserService2
 import org.json.JSONObject
 import pe.edu.ulima.pm20232.aulavirtual.configs.HttpStdResponse
@@ -49,16 +50,32 @@ class LoginScreenViewModel(private val context: Context): ViewModel() {
                             val jsonData = JSONObject(responseData.data)
                             val userId = jsonData.getInt("user_id")
                             val memberId = jsonData.getInt("member_id")
+
                             // localstorage
                             dataStore.saveUserId(userId)
                             dataStore.saveMemberId(memberId)
+                            viewModelScope.launch {
+                                message="Bienvenido"
+                                delay(1000)
+
+                            }
+
                             println("routine?user_id=${userId}&member_id=${memberId}")
                             launch(Dispatchers.Main) {
                                 navController.navigate("routine?user_id=${userId}&member_id=${memberId}")
+                                user=""
+                                password=""
+                                message=""
                             }
+
                         } else {
                             // Maneja errores
+
                             message = response.body()!!.message
+
+
+
+
                         }
                     }
                 }
@@ -68,6 +85,7 @@ class LoginScreenViewModel(private val context: Context): ViewModel() {
 
             }
         }
+
         /*
         if(user == "admin" && password == "123"){
             navController.navigate("profile")
