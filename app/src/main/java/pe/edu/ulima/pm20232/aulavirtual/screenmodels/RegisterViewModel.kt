@@ -49,13 +49,10 @@ class RegisterViewModel(private val context: Context) : ViewModel() {
             message = "Falta completar algunos datos"
             return
         }
-
         if(Contraseña!=Repetir){
             message="Contraseñas no coinciden"
             return
         }
-
-
 
             coroutine.launch {
 
@@ -75,7 +72,7 @@ class RegisterViewModel(private val context: Context) : ViewModel() {
                                     launch(Dispatchers.Main) {
                                         navController.navigate("login")
                                     }
-
+                                    
                                 } else {
                                     // Manejar el caso en que responseData sea nulo
                                     println("responseData es nulo")
@@ -90,15 +87,6 @@ class RegisterViewModel(private val context: Context) : ViewModel() {
                     e.printStackTrace()
                 }
             }
-        message=""
-        DNI=""
-        Correo=""
-        Nombre=""
-        Apellidos=""
-        Telefono=""
-        Contraseña=""
-        Repetir=""
-
 
 
 
