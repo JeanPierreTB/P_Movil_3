@@ -14,9 +14,14 @@ interface MemberService {
         @Query("member_id") memberId: Int? = null,
     ): Call<BodyPartExercisesCount>
 
+
     @GET("member/body_parts") // Reemplaza con la URL de tu punto final
     fun bodyParts(
         @Query("member_id") memberId: Int? = null,
+    ): Call<List<BodyPart>>
+
+    @GET("/body_part/list") // Reemplaza con la URL de tu punto final
+    fun AllbodyParts(
     ): Call<List<BodyPart>>
 
     @GET("member/exercises") // Reemplaza con la URL de tu punto final
@@ -25,6 +30,10 @@ interface MemberService {
         @Query("body_part_id") bodyPartId: Int? = null,
     ): Call<List<Exercise>>
 
+    @GET("exercise/list") // Reemplaza con la URL de tu punto final
+    fun AllExercises(
+        @Query("body_part_id") bodyPartId: Int? = null,
+        ): Call<List<Exercise>>
     @GET("member/exercise") // Reemplaza con la URL de tu punto final
     fun exercise(
         @Query("member_id") memberId: Int? = null,

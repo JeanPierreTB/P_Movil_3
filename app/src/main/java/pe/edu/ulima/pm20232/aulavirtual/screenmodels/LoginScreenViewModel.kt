@@ -9,13 +9,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import pe.edu.ulima.pm20232.aulavirtual.configs.BackendClient
 import pe.edu.ulima.pm20232.aulavirtual.services.UserService2
 import pe.edu.ulima.pm20232.aulavirtual.storages.UserStorage
-
 
 class LoginScreenViewModel(private val context: Context): ViewModel() {
     var user: String by mutableStateOf("")
@@ -39,24 +39,38 @@ class LoginScreenViewModel(private val context: Context): ViewModel() {
             try {
                 withContext(Dispatchers.IO) {
                     val response = userService.findOne(user, password)?.execute()
-                    println(response)
                     if (response != null) {
                         if (response.body()!!.success == true) {
                             val responseData = response.body()!!
                             val jsonData = JSONObject(responseData.data)
                             val userId = jsonData.getInt("user_id")
                             val memberId = jsonData.getInt("member_id")
+
                             // localstorage
                             dataStore.saveUserId(userId)
                             dataStore.saveMemberId(memberId)
+                            viewModelScope.launch {
+                                message="Bienvenido"
+                                delay(1000)
+
+                            }
+
                             println("routine?user_id=${userId}&member_id=${memberId}")
                             launch(Dispatchers.Main) {
                                 navController.navigate("routine?user_id=${userId}&member_id=${memberId}")
+                                user=""
+                                password=""
+                                message=""
                             }
+
                         } else {
                             // Maneja errores
-                            println("Failed")
+
                             message = response.body()!!.message
+
+
+
+
                         }
                     }
                 }
@@ -66,6 +80,7 @@ class LoginScreenViewModel(private val context: Context): ViewModel() {
 
             }
         }
+
         /*
         if(user == "admin" && password == "123"){
             navController.navigate("profile")

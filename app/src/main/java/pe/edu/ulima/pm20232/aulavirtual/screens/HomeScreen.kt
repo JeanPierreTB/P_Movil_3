@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -27,7 +26,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -39,13 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import pe.edu.ulima.pm20232.aulavirtual.screenmodels.HomeScreenViewModel
 import pe.edu.ulima.pm20232.aulavirtual.services.ExerciseMemberService
 
@@ -110,44 +103,6 @@ fun ExercisesGrid(navController: NavController, model: HomeScreenViewModel){
                         text = "exercise id : ${exercises[intValue].description}",
                     )
                     Row(){
-                        /*val context = LocalContext.current
-                        val exoPlayer = remember {
-                            ExoPlayer.Builder(context).build().apply {
-                                setMediaItem(MediaItem.fromUri(Uri.parse(exercises[intValue].videoUrl)))
-                                prepare()
-                            }
-                        }
-                        val isPlaying = exoPlayer.isPlaying ?: false
-
-                        AndroidView(
-                            factory = { context ->
-                                PlayerView(context).apply {
-                                    player = exoPlayer
-                                }
-                            },
-                            modifier = Modifier.fillMaxSize()
-                        )
-
-                        IconButton(
-                            onClick = {
-                                if (isPlaying) {
-                                    exoPlayer.pause()
-                                } else {
-                                    exoPlayer.play()
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .align(Alignment.Bottom)
-                        ) {
-                            Icon(
-                                imageVector = if (isPlaying) Icons.Filled.KeyboardArrowRight else Icons.Filled.PlayArrow,
-                                contentDescription = if (isPlaying) "Pause" else "Play",
-                                tint = Color.White,
-                                modifier = Modifier.size(48.dp)
-                            )
-                        }*/
-
                         YoutubePlayer(youtubeVideoId = exercises[intValue].videoUrl.split("watch?v=")[1], lifecycleOwner = LocalLifecycleOwner.current)
                     }
                 }
@@ -272,7 +227,7 @@ fun HomeScreen(navController: NavController, model: HomeScreenViewModel, filtrar
         ExercisesGrid(navController, model)
     }
 }
-@Composable
+/*@Composable
 fun YoutubePlayer(
     youtubeVideoId: String,
     lifecycleOwner: LifecycleOwner
@@ -295,4 +250,4 @@ fun YoutubePlayer(
             }
         })
 
-}
+}*/

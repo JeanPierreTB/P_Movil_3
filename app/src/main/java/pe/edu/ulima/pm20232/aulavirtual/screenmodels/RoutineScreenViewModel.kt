@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,13 +16,14 @@ import pe.edu.ulima.pm20232.aulavirtual.models.BodyPart
 import pe.edu.ulima.pm20232.aulavirtual.models.Exercise
 import pe.edu.ulima.pm20232.aulavirtual.models.responses.BodyPartExercisesCount
 import pe.edu.ulima.pm20232.aulavirtual.models.responses.ExerciseSetReps
-import pe.edu.ulima.pm20232.aulavirtual.services.*
+import pe.edu.ulima.pm20232.aulavirtual.services.MemberService
 import retrofit2.Response
 
 class RoutineScreenViewModel(): ViewModel(){
     private val memberService = BackendClient.buildService(MemberService::class.java)
     private val coroutine: CoroutineScope = viewModelScope
 
+    var filtrar: Boolean by mutableStateOf(false)
     var userId: Int by mutableStateOf(0)
     var memberId: Int by mutableStateOf(0)
     var bodyPartsCount: Int by mutableStateOf(0)
@@ -48,6 +48,7 @@ class RoutineScreenViewModel(): ViewModel(){
             try {
                 withContext(Dispatchers.IO) {
                     val response = memberService.exercisesBodyParts(memberId).execute()
+
                     if (response.isSuccessful) {
                         val response: BodyPartExercisesCount = response.body()!!
                         bodyPartsCount = response.bodyParts
@@ -68,7 +69,13 @@ class RoutineScreenViewModel(): ViewModel(){
         coroutine.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    val response = memberService.bodyParts(memberId).execute()
+                    val response: Response<List<BodyPart>>
+                    if(!filtrar){
+                        response = memberService.AllbodyParts().execute()
+                    }
+                    else{
+                        response = memberService.bodyParts(memberId).execute()
+                    }
                     if (response.isSuccessful) {
                         val list: List<BodyPart> = response.body()!!
                         for(i: BodyPart in list){
@@ -90,12 +97,23 @@ class RoutineScreenViewModel(): ViewModel(){
         coroutine.launch {
             try {
                 withContext(Dispatchers.IO) {
+                    println("Filtrar: "+filtrar)
                     val response: Response<List<Exercise>>
-                    if(bodyPartId == null || bodyPartId == 0){
-                        response = memberService.exercises(memberId).execute()
-                    }else{
-                        response = memberService.exercises(memberId, bodyPartId).execute()
+                    if(!filtrar){
+                        if(bodyPartId == null || bodyPartId == 0){
+                            response = memberService.AllExercises().execute()
+                        }else{
+                            response = memberService.AllExercises(bodyPartId).execute()
+                        }
                     }
+                    else{
+                        if(bodyPartId == null || bodyPartId == 0){
+                            response = memberService.exercises(memberId).execute()
+                        }else{
+                            response = memberService.exercises(memberId, bodyPartId).execute()
+                        }
+                    }
+
                     if (response.isSuccessful) {
                         val list: List<Exercise> = response.body()!!
                         setExercises(list)

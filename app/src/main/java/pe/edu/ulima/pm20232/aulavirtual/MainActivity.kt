@@ -9,20 +9,17 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.List
@@ -44,8 +41,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import coil.compose.rememberImagePainter
-import coil.transform.CircleCropTransformation
 import pe.edu.ulima.pm20232.aulavirtual.components.BottomNavigationBar
 import pe.edu.ulima.pm20232.aulavirtual.components.TopNavigationBar
 import pe.edu.ulima.pm20232.aulavirtual.configs.BottomBarScreen
@@ -152,19 +147,19 @@ class MainActivity : ComponentActivity() {
                             if(blackList.contains(currentRoute) == false || dataStore.getUserId.collectAsState(initial = 0).value != 0) {
                                 val screens: List<BottomBarScreen> = listOf(
                                     BottomBarScreen(
-                                        route = "profile",
+                                        route = "routine",
                                         title = "Mi Rutina",
                                         icon = Icons.Default.DateRange,
                                         onClick = {
-                                            homeScrennViewModel.filtrar = true
+                                            routineScreenViewModel.filtrar = true
                                         }
                                     ),
                                     BottomBarScreen(
-                                        route = "home",
+                                        route = "routine",
                                         title = "Ejercicios",
                                         icon = Icons.Default.List,
                                         onClick = {
-                                            homeScrennViewModel.filtrar = false
+                                            routineScreenViewModel.filtrar = false
                                         }
                                     ),
                                     BottomBarScreen(
@@ -180,64 +175,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         content = {
-                            if (showDialog) {
-                                AlertDialog(
-                                    onDismissRequest = {
-                                        showDialog = false
-                                    },
-                                    title = {
-                                        Text(text = "Título del cuadro de diálogo")
-                                    },
-                                    text = {
-                                        val imageUrl = "https://pokefanaticos.com/pokedex/assets/images/pokemon_imagenes/25.png"
-                                        val uri = Uri.parse(imageUrl)
-                                        val painter = rememberImagePainter(
-                                            data = uri.scheme + "://" + uri.host + uri.path + (if (uri.query != null) uri.query else ""),
-                                            builder = {
-                                                // You can apply transformations here if needed
-                                                transformations(CircleCropTransformation())
-                                            }
-                                        )
-                                        Column(){
-                                            Text("Este es un cuadro de diálogo de alerta en Compose. Puedes personalizar su contenido aquí.")
-                                            Row(){
-                                                Image(
-                                                    painter = painter,
-                                                    contentDescription = null, // Set a proper content description if required
-                                                    modifier = Modifier.size(40.dp, 40.dp)
-                                                )
-                                                Image(
-                                                    painter = painter,
-                                                    contentDescription = null, // Set a proper content description if required
-                                                    modifier = Modifier.size(40.dp, 40.dp)
-                                                )
-                                            }
-                                        }
-                                    },
-                                    confirmButton = {
-                                        TextButton(
-                                            onClick = {
-                                                // Lógica para manejar el botón de confirmación
-                                                showDialog = false
-                                            }
-                                        ) {
-                                            Text("Aceptar")
-                                        }
-                                    },
-                                    dismissButton = {
-                                        TextButton(
-                                            onClick = {
-                                                // Lógica para manejar el botón de descartar
-                                                showDialog = false
-                                            }
-                                        ) {
-                                            Text("Cancelar")
-                                        }
-                                    }
-                                )
-                            }
-
-                            if (showShare) {
+                                                       if (showShare) {
                                 AlertDialog(
                                     onDismissRequest = {
                                         showShare = false
