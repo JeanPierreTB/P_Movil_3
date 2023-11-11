@@ -1,9 +1,12 @@
 package pe.edu.ulima.pm20232.aulavirtual.screens
 
+
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+
+import android.widget.ScrollView
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -25,9 +28,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.mukesh.MarkDown
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pe.edu.ulima.pm20232.aulavirtual.R
 import pe.edu.ulima.pm20232.aulavirtual.components.ButtonWithIcon
@@ -43,7 +48,7 @@ fun TopScreen(){
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Orange400)
+                .background(if (isSystemInDarkTheme()) Color.Black else Gray1200)
                 .weight(3f)
                 .padding(8.dp),
             contentAlignment = Alignment.TopCenter
@@ -60,17 +65,17 @@ fun TopScreen(){
                 Image(
                     painter = painterResource(id = R.drawable.ic_ulima), // Replace with your SVG resource ID
                     contentDescription = "Universidad de Lima",
-                    modifier = Modifier.size(120.dp),
-                    colorFilter = ColorFilter.tint(White400),
+                    modifier = Modifier.size(105.dp),
+                    colorFilter = ColorFilter.tint(if(isSystemInDarkTheme()) Color.White else Orange400)
                 )
                 Text1(
-                    text = "Gimnasio UL",
+                    text = "Gimnasio ULima",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
+                    color = if(isSystemInDarkTheme()) Color.White else Color.Black,
                     //fontSize = 40.sp,
-                    modifier =  Modifier.padding(top = 20.dp, bottom = 20.dp),
-                        style = MaterialTheme.typography.h4.copy(
-                        fontSize = 40.sp,
+                    modifier =  Modifier.padding(top = 5.dp, bottom = 20.dp),
+                    style = MaterialTheme.typography.h4.copy(
+                        fontSize = 25.sp,
                         fontFamily = FontFamily(Font(R.font.caslon_classico_sc_regular)),
                         color = if (isSystemInDarkTheme()) White400 else Orange400 // Apply the custom text color here
                     )
@@ -90,44 +95,28 @@ fun LoginForm(
     bottomSheetScaffoldState: BottomSheetScaffoldState,
     navController: NavHostController
 ){
-    val configuration = LocalConfiguration.current
-    var mainBoxPadding = (screenHeightDp * 0.30).dp
-    var whiteBoxTop = 40.dp
-    var whiteBoxStart = (screenWidthDp * 0.125).dp
-    var loginBox = (screenHeightDp * 0.45).dp
-
-    if(configuration.orientation == ORIENTATION_LANDSCAPE){
-        mainBoxPadding = (screenHeightDp * 0.10).dp
-        whiteBoxTop = 10.dp
-        whiteBoxStart = (screenWidthDp * 0.055).dp
-        loginBox = (screenHeightDp * 0.95).dp
-    }
     var termsDisabled = true
 
-    Box( // caja gris (light) - mainBox
+    Box(
+        // caja gris (light)
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = mainBoxPadding,)
-            .background(Gray1200),
-    ) { // whitebox
+            .padding(top = (screenHeightDp * 0.30).dp,)
+            .background(if (isSystemInDarkTheme()) Color.Black else Gray1200),
+    ) {
         Box(modifier = Modifier.padding(
-            start = whiteBoxStart,
-            top = (whiteBoxTop),
-        end= whiteBoxStart
+            start = (screenWidthDp * 0.125).dp,
+            top = (40.dp)
         ),){
             Box(
                 modifier = Modifier
                     .size(
                         (screenWidthDp * 0.75).dp,
-                        loginBox
+                        (screenHeightDp * 0.42).dp
                     ) // Adjust the size as needed
-                    //.border(1.dp, Gray800)
-                    .background(White400)
-                    .shadow(
-                        elevation = 5.dp,
-                        shape = MaterialTheme.shapes.medium,
-                        //color = Color.Gray
-                    )
+                    .border(1.dp, Gray800)
+                    .background(if (isSystemInDarkTheme()) Gray1200 else White400)
+
                     .padding(start = 20.dp, top = 30.dp, bottom = 20.dp, end = 20.dp),
             ) {
                 Column(
@@ -159,7 +148,7 @@ fun LoginForm(
                             .padding(top = 2.dp),
                         horizontalArrangement = Arrangement.Center,
                     ){
-                        ButtonWithIcon("LOGIN", Icons.Default.Person,{
+                        ButtonWithIcon("LOGIN", {
                             viewModel.access(navController)
                         })
                     }
@@ -255,7 +244,7 @@ fun TermsAndConditions(viewModel: LoginScreenViewModel, bottomSheetScaffoldState
                     .padding(start = 5.dp, end = 5.dp) // Equal weight for the first part
             ) {
                 ButtonWithIcon(
-                    text = "Acepto", icon = Icons.Default.Check, onClick  = {
+                    text = "Acepto", onClick  = {
                         coroutineScope.launch {
                             viewModel.bottomSheetCollapse = true
                             viewModel.termsAndConditionsChecked = true
@@ -270,7 +259,7 @@ fun TermsAndConditions(viewModel: LoginScreenViewModel, bottomSheetScaffoldState
                     .weight(1f)
                     .padding(start = 5.dp, end = 5.dp) // Equal weight for the second part
             ) {
-                ButtonWithIcon("No Acpeto", Icons.Default.Delete, onClick = {
+                ButtonWithIcon("No Acpeto", onClick = {
                     coroutineScope.launch {
                         viewModel.bottomSheetCollapse = true
                         viewModel.termsAndConditionsChecked = false
@@ -312,93 +301,22 @@ fun GoToReset(navController: NavHostController){
         contentAlignment = Alignment.BottomCenter
     ){
         Row() {
-            Text1(text = "Olvidó su contraseña? ", textAlign = TextAlign.End, color = Gray800, fontSize = 16.sp)
+            Text1(text = "Olvidaste tu contraseña? ", textAlign = TextAlign.End, color = if(isSystemInDarkTheme()) Color.White else Gray800, fontSize = 16.sp)
             Text1(
-                text = "Cambiala Aquí",
+                text = "Recupérala aqui",
                 textAlign = TextAlign.End,
                 color = Orange400,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable {
                     println("Cambiar Contraseña")
-                    navController.navigate("reset_password")
-                },
-            )
-        }
-    }
-}
 
-@Composable
-fun LoginLandscape(screenWidthDp: Int, screenHeightDp: Int, viewModel: LoginScreenViewModel, navController: NavHostController){
-    var leftContent by remember { mutableStateOf(0) }
-
-    LazyColumn {
-        item {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                // Row dividiendo en dos partes iguales
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Parte izquierda
-                    Box(
-                        modifier = Modifier
-                            .weight(0.35f)
-                            .height(screenHeightDp.dp)
-                            .background(Orange400)
-                            .clickable { leftContent++ },
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
-                        )
-                        {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(){
-                                    Image(
-                                        painter = painterResource(id = R.drawable.ic_ulima), // Replace with your SVG resource ID
-                                        contentDescription = "Universidad de Lima",
-                                        modifier = Modifier.size(120.dp),
-                                        colorFilter = ColorFilter.tint(White400),
-                                    )
-                                    Text1(
-                                        text = "Gimnasio UL",
-                                        textAlign = TextAlign.Center,
-                                        color = Color.White,
-                                        //fontSize = 40.sp,
-                                        modifier = Modifier.padding(top = 20.dp, bottom = 20.dp),
-                                        style = MaterialTheme.typography.h4.copy(
-                                            fontSize = 40.sp,
-                                            fontFamily = FontFamily(Font(R.font.caslon_classico_sc_regular)),
-                                            color = if (isSystemInDarkTheme()) White400 else Orange400 // Apply the custom text color here
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    // Espacio entre las dos partes
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    // Parte derecha
-                    Box(
-                        modifier = Modifier
-                            .weight(0.65f)
-                            .height(screenHeightDp.dp)
-                            .background(Gray1200)
-                    ) {
-                        BottomSheet(screenWidthDp, screenHeightDp, viewModel, navController)
-                    }
+                    navController.navigate("reset")
+                    println("Que fue")
                 }
-            }
+
+
+            )
         }
     }
 }
@@ -408,14 +326,9 @@ fun LoginScreen(viewModel: LoginScreenViewModel, navController: NavHostControlle
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp
     val screenHeightDp = configuration.screenHeightDp
-
-    if(configuration.orientation == ORIENTATION_LANDSCAPE){
-        LoginLandscape(screenWidthDp, screenHeightDp, viewModel, navController)
-    }else {
-        TopScreen()
-        BottomSheet(screenWidthDp, screenHeightDp, viewModel, navController)
-        if (viewModel.bottomSheetCollapse) {
-            GoToReset(navController)
-        }
+    TopScreen()
+    BottomSheet(screenWidthDp, screenHeightDp, viewModel, navController)
+    if(viewModel.bottomSheetCollapse){
+        GoToReset(navController)
     }
 }
