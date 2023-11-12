@@ -228,7 +228,7 @@ class MainActivity : ComponentActivity() {
                                                     // Ahora puedes utilizar membersMap en tu actividad
                                                     // Por ejemplo, imprimir los valores
                                                     membersMap.forEach { (memberId, memberInfo) ->
-                                                        println("Member ID: $memberId, Info: $memberInfo")
+                                                        println("$memberInfo")
                                                     }
                                                 }
                                             }
