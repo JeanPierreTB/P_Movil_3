@@ -221,7 +221,7 @@ class MainActivity : ComponentActivity() {
                                         LazyColumn(
                                             contentPadding = PaddingValues(16.dp)
                                         ) {
-                                            val arrayIntegrantes = intArrayOf(5, 7, 9, 14, 23)
+                                            val arrayIntegrantes = intArrayOf(5, 6, 7, 9, 14, 23)
                                             lifecycleScope.launch {
                                                 arrayIntegrantes.forEach { memberId ->
                                                     val membersMap = viewModel.fetchAllMemberTeam(memberId)
