@@ -2,6 +2,7 @@ package pe.edu.ulima.pm20232.aulavirtual.services
 
 import pe.edu.ulima.pm20232.aulavirtual.models.BodyPart
 import pe.edu.ulima.pm20232.aulavirtual.models.Exercise
+import pe.edu.ulima.pm20232.aulavirtual.models.Member
 import pe.edu.ulima.pm20232.aulavirtual.models.responses.BodyPartExercisesCount
 import pe.edu.ulima.pm20232.aulavirtual.models.responses.ExerciseSetReps
 import retrofit2.Call
@@ -39,4 +40,12 @@ interface MemberService {
         @Query("member_id") memberId: Int? = null,
         @Query("exercise_id") exerciseId: Int? = null,
     ): Call<ExerciseSetReps>
+
+    //Yo le agregue esto
+    @GET("member/profile") // Reemplaza con la URL de tu punto final
+    fun memberTeam(
+        @Query("user_id") memberId: Int? = null,
+        //Con el Call<List<Member>> podemos crear una lista Member
+    ): Call<List<Member>>
+
 }
