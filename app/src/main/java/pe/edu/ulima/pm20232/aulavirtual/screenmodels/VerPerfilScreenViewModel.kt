@@ -9,12 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pe.edu.ulima.pm20232.aulavirtual.configs.BackendClient
 import pe.edu.ulima.pm20232.aulavirtual.models.BodyPart
+import pe.edu.ulima.pm20232.aulavirtual.models.Exercise
 import pe.edu.ulima.pm20232.aulavirtual.models.Member
 import pe.edu.ulima.pm20232.aulavirtual.models.responses.BodyPartExercisesCount
+import pe.edu.ulima.pm20232.aulavirtual.models.responses.ExerciseSetReps
 import pe.edu.ulima.pm20232.aulavirtual.services.MemberService
 import retrofit2.Response
 
@@ -22,7 +26,8 @@ class VerPerfilScreenViewModel(): ViewModel() {
     private val memberService = BackendClient.buildService(MemberService::class.java)
     private val coroutine: CoroutineScope = viewModelScope
 
-    var userId: Int by mutableStateOf(0)
+    private var _exercise = MutableStateFlow<Member>(Member(0, 0, "", "", "", "", "", "", 0))
+    val exercise: StateFlow<Member> get() = _exercise
     var Ccode: Int by mutableStateOf(0)
     var Cdni: String by mutableStateOf("")
     var Cnames: String by mutableStateOf("")
@@ -32,24 +37,31 @@ class VerPerfilScreenViewModel(): ViewModel() {
     var CimageUrl: String by mutableStateOf("")
     var ClevelId: Int by mutableStateOf(0)
 
-    fun fetchValidate(){
+    fun setExercise(e: Member) {
+        _exercise.value = e
+    }
+
+
+    fun fetchValidate(userId: Int){
         coroutine.launch {
             Log.d("XFGG", "Q PASO")
             try {
-                Log.d("XFGG", "LOLO1")
+
                 withContext(Dispatchers.IO) {
 
                     Log.d("XFGG", "LOLO2")
-
-
-                    Log.d("XFGG", "LOLO22")
                     val response = memberService.profile(userId).execute()
 
-                    Log.d("XFGG", "LOLO3")
+                    Log.d("XFGG", response.toString())
                     if (response.isSuccessful) {
                         Log.d("XFGG", "LOLO4")
                         val response: Member = response.body()!!
-                        Ccode= response.code
+                        println(response.toString())
+                        Log.d("wd", "${response.code.toString()}")
+                        val Ccode= "${response.code.toInt()}"
+
+                        setExercise(response)
+
                         Log.d("XFGG", "LOLO5")
                         Cdni= response.dni
                         Cnames= response.names

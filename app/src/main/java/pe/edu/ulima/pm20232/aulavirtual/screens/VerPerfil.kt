@@ -103,9 +103,9 @@ fun ButtonWithIcon2(
 }
 @Composable
 fun Informacion(navController: NavHostController, param1:Int, model: VerPerfilScreenViewModel) {
-
+    val exercises by model.exercise.collectAsState()
     var memberWithId1 = memberService.memberList.find { it.id == param1 }
-    Box(
+    /*Box(
         // caja gris (light)
         modifier = Modifier
             .fillMaxSize()
@@ -328,8 +328,9 @@ fun Informacion(navController: NavHostController, param1:Int, model: VerPerfilSc
         }
 
 
-    }}
-    /*Box(
+    }}*/
+
+    Box(
         // caja gris (light)
         modifier = Modifier
             .fillMaxSize()
@@ -386,7 +387,7 @@ fun Informacion(navController: NavHostController, param1:Int, model: VerPerfilSc
                 ) {
                     if (memberWithId1 != null) {
                         Text(
-                            text = "${model.Cnames}",
+                            text = exercises.names,
                             color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold
@@ -410,7 +411,7 @@ fun Informacion(navController: NavHostController, param1:Int, model: VerPerfilSc
                                 )
 
                                     Text(
-                                        text = "${model.Ccode}",
+                                        text = exercises.code.toString(),
                                         color = if (isSystemInDarkTheme()) Color.Gray else Color.Black,
                                         fontSize = 14.sp
                                     )
@@ -443,7 +444,7 @@ fun Informacion(navController: NavHostController, param1:Int, model: VerPerfilSc
                 )
 
                     Text(
-                        text = "${model.Cphone}",
+                        text = exercises.phone,
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
@@ -464,7 +465,7 @@ fun Informacion(navController: NavHostController, param1:Int, model: VerPerfilSc
                 )
 
                     Text(
-                        text = "${model.Cemail}",
+                        text = exercises.email,
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
@@ -550,15 +551,16 @@ fun Informacion(navController: NavHostController, param1:Int, model: VerPerfilSc
         }
 
 
-    }*/
+    }}
 
 @Composable
 fun VerPerfil(navController: NavHostController,param1:Int, viewModel: VerPerfilScreenViewModel){
-    Log.d("XFGG", "VerPerfil1")
-    viewModel.userId = param1
-    Log.d("XFGG", "VerPerfil2")
-    viewModel.fetchValidate()
-    Log.d("XFGG", "VerPerfil3")
+
+    viewModel.fetchValidate(param1)
+
+
+
+
     Informacion(navController, param1, viewModel)
 
 }
