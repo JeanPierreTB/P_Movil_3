@@ -1,7 +1,11 @@
 package pe.edu.ulima.pm20232.aulavirtual.components
 
+import android.content.Intent
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -18,10 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
+import pe.edu.ulima.pm20232.aulavirtual.PrActivity
 import pe.edu.ulima.pm20232.aulavirtual.configs.TopBarScreen
 import pe.edu.ulima.pm20232.aulavirtual.storages.UserStorage
 
@@ -30,10 +36,18 @@ fun TopNavigationBar(
     navController: NavController,
     screens: List<TopBarScreen>,
     activity: ComponentActivity,
-    dataStore: UserStorage
+    dataStore: UserStorage,
+    userId:Int
 ) {
     var isMenuExpanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val launcherActivity = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        // Handle the result here
+        val resultCode = result.resultCode
+        val data = result.data
+        // Handle the result as needed
+    }
 
     TopAppBar(
         title = { Text(text = "ULima GYM") },
@@ -66,10 +80,17 @@ fun TopNavigationBar(
                     DropdownMenuItem(
                         onClick = {
                             // Handle menu item click
-                            if(item.route != "sign_out"){
+                            if(item.route == "ver_perfil"){
+                                val intent = Intent(context, PrActivity::class.java)
+                                intent.putExtra("userId", userId)
+                                launcherActivity.launch(intent)
+                            }else if(item.route != "sign_out") {
                                 isMenuExpanded = false
                                 item.route?.let { navController.navigate(it) }
-                            }else{
+                            }
+                            else if(item.onClick == null && item.route != null){
+                                navController.navigate(item.route)}
+                            else{
                                 val d = Log.d("TOP_NAVIGATION_BAR", "cerrar sesión")
                                 scope.launch {
                                     dataStore.clearAll()

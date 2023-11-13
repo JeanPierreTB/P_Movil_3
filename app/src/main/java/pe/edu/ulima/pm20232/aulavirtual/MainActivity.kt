@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
 
     //Para la conexion de la base de datos
     private val viewModel: MemberScreenViewModel by viewModels()
-
+    var userId: Int by mutableStateOf(0)
     override fun onCreate(savedInstanceState: Bundle?) {
         // set preferencesManager in viewModels
 
@@ -157,7 +157,7 @@ class MainActivity : ComponentActivity() {
                                     ),
 
                                     )
-                                TopNavigationBar(navController, screens, this, dataStore)
+                                TopNavigationBar(navController, screens, this, dataStore, userId)
 
                             }
                         },
@@ -346,7 +346,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 ), content = { entry ->
                                     val memberId = entry.arguments?.getInt("member_id")!!
-                                    val userId = entry.arguments?.getInt("user_id")!!
+                                    userId = entry.arguments?.getInt("user_id")!!
                                     routineScreenViewModel.memberId = memberId
                                     routineScreenViewModel.userId = userId
                                     routineScreenViewModel.fetchBodyPartsExercises()

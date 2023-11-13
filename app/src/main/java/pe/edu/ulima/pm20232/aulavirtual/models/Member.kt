@@ -4,9 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Member (
     //Cada vez que se escriba distinto a lo que te bota el API (URL). poner el @
-    @SerializedName("user_id")
     val id: Int,
-    @SerializedName("user")
     val code: Int,
     val dni: String,
     val names: String,
@@ -14,7 +12,8 @@ data class Member (
     val lastNames: String,
     val email: String,
     val phone: String,
-    //val imageUrl: String, --> no lo veo, lo voy borrando
-    @SerializedName("level_name")
+    @SerializedName("image_url")
+    val imageUrl: String,
+    @SerializedName("level_id")
     val levelId: Int
 )
