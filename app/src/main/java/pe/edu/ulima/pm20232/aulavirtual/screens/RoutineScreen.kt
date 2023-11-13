@@ -52,6 +52,7 @@ import coil.compose.rememberImagePainter
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import pe.edu.ulima.pm20232.aulavirtual.configs.BASE_URL
 import pe.edu.ulima.pm20232.aulavirtual.screenmodels.RoutineScreenViewModel
 import pe.edu.ulima.pm20232.aulavirtual.services.ExerciseMemberService
 import pe.edu.ulima.pm20232.aulavirtual.ui.theme.Gray1200
@@ -73,7 +74,7 @@ fun RoutineGrid(navController: NavController, model: RoutineScreenViewModel){
             Column(){
                 println(exercises[i].imageUrl)
                 Image(
-                    painter = rememberImagePainter(data = exercises[i].imageUrl),
+                    painter = rememberImagePainter(data = BASE_URL+"/"+exercises[i].imageUrl),
                     contentDescription = exercises[i].name,
                     modifier = Modifier
                         .size(100.dp)
@@ -85,7 +86,7 @@ fun RoutineGrid(navController: NavController, model: RoutineScreenViewModel){
 
                         },
                 )
-                Text(exercises[i].name)
+                Text(text = exercises[i].name, modifier = Modifier.padding(5.dp), fontSize = 12.sp)
             }
         }
 

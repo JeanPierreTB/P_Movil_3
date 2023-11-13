@@ -303,7 +303,7 @@ fun GoToReset(navController: NavHostController){
         Row() {
             Text1(text = "Olvidaste tu contraseña? ", textAlign = TextAlign.End, color = if(isSystemInDarkTheme()) Color.White else Gray800, fontSize = 16.sp)
             Text1(
-                text = "Recupérala aqui",
+                text = "Recupérala aquí",
                 textAlign = TextAlign.End,
                 color = Orange400,
                 fontSize = 16.sp,
