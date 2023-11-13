@@ -24,16 +24,10 @@ class MemberScreenViewModel: ViewModel() {
         return withContext(Dispatchers.IO) {
             val response = memberService2.memberTeam(memberId).execute()
             if (response.isSuccessful) {
-                val list: List<Member> = response.body() ?: emptyList()
+                val miembro: Member = response.body()!!
                 val membersMap = mutableMapOf<Int, String>()
-
-                for (g: Member in list) {
-                    val memberId = g.id
-                    val memberName = g.names
-                    val memberLastName = g.lastNames
-                    val memberCode = g.code
-                    membersMap[memberId] = "Nombre: $memberName $memberLastName Codigo: $memberCode"
-                }
+                membersMap[memberId] =
+                    "Nombre: ${miembro.names} - ${miembro.lastNames} Codigo: ${miembro.code}"
 
                 // Actualizar LiveData con el nuevo mapa
                 _membersLiveData.postValue(membersMap)

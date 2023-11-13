@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.protobuf.LazyStringArrayList
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavType
@@ -110,7 +111,7 @@ class MainActivity : ComponentActivity() {
                     var showDialog by remember { mutableStateOf(false) }
                     var showShare by remember { mutableStateOf(false) }
                     val dataStore = UserStorage(applicationContext)
-
+                    var text by remember { mutableStateOf("Hello, Compose!") }///////////////
                     var imageUri by remember { mutableStateOf<Uri?>(null) }
                     val launcher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.GetContent()){ uri: Uri? ->
@@ -191,151 +192,170 @@ class MainActivity : ComponentActivity() {
                                 BottomNavigationBar(navController = navController, screens)
 
                             }
-                        },
-                        content = {
-                            if (showDialog) {
-                                AlertDialog(
-                                    onDismissRequest = {
-                                        showDialog = false
-                                    },
-                                    title = {
-                                        Text(
-                                            text = "Integrantes del Grupo",
-                                            //color = Color.Black,
-                                            fontSize = 24.sp,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    },
-                                    text = {
-                                        /*
-                                        //Funciona pero el profe quiere solo los integrantes del grupo.
-                                        //Ademas el cuadro se ve muy grande.
-                                            LazyColumn(
-                                                contentPadding = PaddingValues(16.dp)
-                                            ) {
-                                                items(memberList) { member ->
-                                                    Text(text = "${member.code} - ${member.names}")
-                                                }
-                                            }
-                                        */
-                                        LazyColumn(
-                                            contentPadding = PaddingValues(16.dp)
-                                        ) {
-                                            val arrayIntegrantes = intArrayOf(5, 6, 7, 9, 14, 23)
-                                            lifecycleScope.launch {
-                                                arrayIntegrantes.forEach { memberId ->
-                                                    val membersMap = viewModel.fetchAllMemberTeam(memberId)
-                                                    // Ahora puedes utilizar membersMap en tu actividad
-                                                    // Por ejemplo, imprimir los valores
-                                                    membersMap.forEach { (memberId, memberInfo) ->
-                                                        println("$memberInfo")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    confirmButton = {
+                        }
+                    ) {
+                        if (showDialog) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    showDialog = false
+                                },
+                                title = {
+                                    Text(
+                                        text = "Integrantes del Grupo",
+                                        //color = Color.Black,
+                                        fontSize = 24.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                },
+                                text = {
 
-                                    },
-                                    dismissButton = {
+                                    /*
+                                    Column(){
+                                        Row(){
 
-                                    }
-                                )
-                            }
-                            if (showShare) {
-                                AlertDialog(
-                                    onDismissRequest = {
-                                        showShare = false
-                                    },
-                                    title = {
-                                        Text(
-                                            text = "Gracias por compartir",
-                                            color = Color.Black,
-                                            fontSize = 24.sp,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    },
-                                    text = {
-                                        /*
-                                        val imageUrl = "https://cdn-icons-png.flaticon.com/512/1384/1384095.png"
-                                        val uri = Uri.parse(imageUrl)
-                                        val painter = rememberImagePainter(
-                                            data = uri.scheme + "://" + uri.host + uri.path + (if (uri.query != null) uri.query else ""),
-                                            builder = {
-                                                // You can apply transformations here if needed
-                                                transformations(CircleCropTransformation())
-                                            }
-                                        )
-                                        */
-                                        Column(){
-
-                                            Row(){
-                                                //Facebook
-                                                Button(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(top = 1.dp, /*start = 40.dp, end = 40.dp*/),
-                                                    onClick = {
-                                                        val intent = Intent(Intent.ACTION_SEND)
-                                                        intent.type = "image/jpg"
-                                                        val appPackage = "com.facebook.katana"
-                                                        val nombre = "XD"
-                                                        intent.putExtra(Intent.EXTRA_TITLE, "Has seleccionado un $nombre")
-                                                        intent.putExtra(Intent.EXTRA_TEXT, imageUri)
+                                            Button(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(top = 1.dp, /*start = 40.dp, end = 40.dp*/),
+                                                onClick = {
+                                                    val intent = Intent(Intent.ACTION_SEND)
+                                                    intent.type = "image/jpg"
+                                                    val appPackage = "com.facebook.katana"
+                                                    val nombre = "XD"
+                                                    intent.putExtra(Intent.EXTRA_TITLE, "Has seleccionado un $nombre")
+                                                    intent.putExtra(Intent.EXTRA_TEXT, imageUri)
+                                                    launcherImage.launch(intent)
+                                                    intent.setPackage(appPackage)
+                                                    if(intent.resolveActivity(context.packageManager) != null){
                                                         launcherImage.launch(intent)
-                                                        intent.setPackage(appPackage)
-                                                        if(intent.resolveActivity(context.packageManager) != null){
-                                                            launcherImage.launch(intent)
-                                                        }
-                                                    },
+                                                    }
+                                                },
 
-                                                    ){
-                                                    Text(
-                                                        "Compartir en Facebook",
-                                                    )
+                                                ){Text(
+                                                "Compartir en Facebook"
+                                            )}
+                                        }
+                                    }
+                                     */
+
+                                    LazyColumn(
+                                        contentPadding = PaddingValues(16.dp)
+                                    ) {
+                                        val arrayIntegrantes = intArrayOf(5, 6, 7, 9, 14, 23)
+
+                                        lifecycleScope.launch {
+                                            arrayIntegrantes.forEach { memberId ->
+                                                val membersMap =
+                                                    viewModel.fetchAllMemberTeam(memberId)
+                                                // Ahora puedes utilizar membersMap en tu actividad
+                                                // Por ejemplo, imprimir los valores
+                                                membersMap.forEach { (memberId, memberInfo) ->
+                                                    println("$memberInfo")
+                                                    text = text + "$memberInfo" + "\n"
+                                                    Log.d("Miembros ","$memberInfo")
+
                                                 }
-
                                             }
                                         }
-                                    },
-                                    confirmButton = {
-
-                                    },
-                                    dismissButton = {
-
                                     }
-                                )
+                                    Text(text = text)
+                                },
+                                confirmButton = {
+
+                                },
+                                dismissButton = {
+
+                                }
+                            )
+                        }
+                        if (showShare) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    showShare = false
+                                },
+                                title = {
+                                    Text(
+                                        text = "Gracias por compartir",
+                                        color = Color.Black,
+                                        fontSize = 24.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                },
+                                text = {
+
+                                    Column() {
+
+                                        Row() {
+                                            //Facebook
+                                            Button(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(top = 1.dp, /*start = 40.dp, end = 40.dp*/),
+                                                onClick = {
+                                                    val intent = Intent(Intent.ACTION_SEND)
+                                                    intent.type = "image/jpg"
+                                                    val appPackage = "com.facebook.katana"
+                                                    val nombre = "XD"
+                                                    intent.putExtra(
+                                                        Intent.EXTRA_TITLE,
+                                                        "Has seleccionado un $nombre"
+                                                    )
+                                                    intent.putExtra(Intent.EXTRA_TEXT, imageUri)
+                                                    launcherImage.launch(intent)
+                                                    intent.setPackage(appPackage)
+                                                    if (intent.resolveActivity(context.packageManager) != null) {
+                                                        launcherImage.launch(intent)
+                                                    }
+                                                },
+
+                                                ) {
+                                                Text(
+                                                    "Compartir en Facebook",
+                                                )
+                                            }
+
+                                        }
+                                    }
+                                },
+                                confirmButton = {
+
+                                },
+                                dismissButton = {
+
+                                }
+                            )
+                        }
+                        NavHost(navController, startDestination = "login") {
+                            composable(route = "splash") {
+                                SplashScreen {
+                                    navController.navigate("login")
+                                }
                             }
-                            NavHost(navController, startDestination = "login") {
-                                composable(route = "splash") {
-                                    SplashScreen {
-                                        navController.navigate("login")
-                                    }
-                                }
-                                composable(route = "home") {
-                                    Log.d("HOME", "home screen")
-                                    HomeScreen(navController, homeScrennViewModel)
-                                }
-                                composable(route = "pokemon") {
-                                    Log.d("POKEMON", "pokemons screen")
-                                    PokemonScreen(navController)
-                                }
-                                composable(route = "reset") {
-                                    Log.d("ROUTER", "reset")
-                                    ResetPasswordScreen(resetPasswordViewModel,navController)
-                                }
-                                composable(route = "profile") {
-                                    Log.d("ROUTER", "profile")
-                                    ProfileScreen(navController, profileScrennViewModel)
-                                }
-                                composable(route = "routine_detail") {
-                                    Log.d("ROUTER", "routine_detail")
-                                    RoutineDetailScreen(navController, routineScreenViewModel)
-                                }
-                                composable(route = "register") {
-                                    RegisterScreen(registerViewModel, navController)
-                                }
-                                composable(route = "routine?user_id={user_id}&member_id={member_id}", arguments = listOf(
+                            composable(route = "home") {
+                                Log.d("HOME", "home screen")
+                                HomeScreen(navController, homeScrennViewModel)
+                            }
+                            composable(route = "pokemon") {
+                                Log.d("POKEMON", "pokemons screen")
+                                PokemonScreen(navController)
+                            }
+                            composable(route = "reset") {
+                                Log.d("ROUTER", "reset")
+                                ResetPasswordScreen(resetPasswordViewModel, navController)
+                            }
+                            composable(route = "profile") {
+                                Log.d("ROUTER", "profile")
+                                ProfileScreen(navController, profileScrennViewModel)
+                            }
+                            composable(route = "routine_detail") {
+                                Log.d("ROUTER", "routine_detail")
+                                RoutineDetailScreen(navController, routineScreenViewModel)
+                            }
+                            composable(route = "register") {
+                                RegisterScreen(registerViewModel, navController)
+                            }
+                            composable(route = "routine?user_id={user_id}&member_id={member_id}",
+                                arguments = listOf(
                                     navArgument("user_id") {
                                         type = NavType.IntType
                                         defaultValue = 0
@@ -344,13 +364,14 @@ class MainActivity : ComponentActivity() {
                                         type = NavType.IntType
                                         defaultValue = 0
                                     }
-                                ), content = { entry ->
+                                ),
+                                content = { entry ->
                                     val memberId = entry.arguments?.getInt("member_id")!!
                                     userId = entry.arguments?.getInt("user_id")!!
-                                    if(routineScreenViewModel.memberId==0){
+                                    if (routineScreenViewModel.memberId == 0) {
                                         routineScreenViewModel.memberId = memberId
                                     }
-                                    if(routineScreenViewModel.userId==0){
+                                    if (routineScreenViewModel.userId == 0) {
                                         routineScreenViewModel.userId = userId
                                     }
                                     routineScreenViewModel.fetchBodyPartsExercises()
@@ -358,44 +379,50 @@ class MainActivity : ComponentActivity() {
                                     routineScreenViewModel.fetchExercieses()
                                     RoutineScreen(routineScreenViewModel, navController)
                                 })
-                                composable(route = "pokemon/edit?pokemon_id={pokemon_id}", arguments = listOf(
+                            composable(route = "pokemon/edit?pokemon_id={pokemon_id}",
+                                arguments = listOf(
                                     navArgument("pokemon_id") {
                                         type = NavType.IntType
                                         defaultValue = 0
                                     }
-                                ), content = { entry ->
+                                ),
+                                content = { entry ->
                                     val pokemonId = entry.arguments?.getInt("pokemon_id")!!
                                     pokemonDetailScrennViewModel.pokemonId = pokemonId
                                     PokemonDetailScreen(navController, pokemonDetailScrennViewModel)
                                 })
-                                composable(route = "login") {
-                                    Log.d("ROUTER", "login")
-                                    val dataStore = UserStorage(applicationContext)
-                                    if(dataStore.getUserId.collectAsState(initial = 9999).value != 0){
-                                        println(dataStore.getUserId.collectAsState(initial = 0).value)
-                                        val userid = dataStore.getUserId.collectAsState(initial = 0).value
-                                        val memberId = dataStore.getMemberId.collectAsState(initial = 0).value
-                                        Log.d("ROUTER", dataStore.getUserId.collectAsState(initial = 0).value.toString())
-                                        if (userid != null && memberId != null){
-                                            userId = userid
-                                            if(routineScreenViewModel.memberId==0){
-                                                routineScreenViewModel.memberId = memberId
-                                            }
-                                            if(routineScreenViewModel.userId==0){
-                                                routineScreenViewModel.userId = userId
-                                            }
-                                            routineScreenViewModel.fetchBodyPartsExercises()
-                                            routineScreenViewModel.fetchBodyParts()
-                                            routineScreenViewModel.fetchExercieses()
-                                            RoutineScreen(routineScreenViewModel, navController)
+                            composable(route = "login") {
+                                Log.d("ROUTER", "login")
+                                val dataStore = UserStorage(applicationContext)
+                                if (dataStore.getUserId.collectAsState(initial = 9999).value != 0) {
+                                    println(dataStore.getUserId.collectAsState(initial = 0).value)
+                                    val userid =
+                                        dataStore.getUserId.collectAsState(initial = 0).value
+                                    val memberId =
+                                        dataStore.getMemberId.collectAsState(initial = 0).value
+                                    Log.d(
+                                        "ROUTER",
+                                        dataStore.getUserId.collectAsState(initial = 0).value.toString()
+                                    )
+                                    if (userid != null && memberId != null) {
+                                        userId = userid
+                                        if (routineScreenViewModel.memberId == 0) {
+                                            routineScreenViewModel.memberId = memberId
                                         }
-                                    }else{
-                                        LoginScreen(loginScrennViewModel, navController)
+                                        if (routineScreenViewModel.userId == 0) {
+                                            routineScreenViewModel.userId = userId
+                                        }
+                                        routineScreenViewModel.fetchBodyPartsExercises()
+                                        routineScreenViewModel.fetchBodyParts()
+                                        routineScreenViewModel.fetchExercieses()
+                                        RoutineScreen(routineScreenViewModel, navController)
                                     }
+                                } else {
+                                    LoginScreen(loginScrennViewModel, navController)
                                 }
                             }
                         }
-                    )
+                    }
 
                 }
             }

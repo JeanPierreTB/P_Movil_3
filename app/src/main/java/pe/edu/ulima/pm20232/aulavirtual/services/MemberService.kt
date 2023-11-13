@@ -424,6 +424,6 @@ interface MemberService {
     fun memberTeam(
         @Query("user_id") memberId: Int? = null,
         //Con el Call<List<Member>> podemos crear una lista Member
-    ): Call<List<Member>>
+    ): Call<Member>
 
 }

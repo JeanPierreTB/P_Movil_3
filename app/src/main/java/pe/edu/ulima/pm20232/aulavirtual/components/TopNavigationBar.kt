@@ -49,6 +49,7 @@ fun TopNavigationBar(
         // Handle the result as needed
     }
 
+
     TopAppBar(
         title = { Text(text = "ULima GYM") },
         /*navigationIcon = {
@@ -79,6 +80,7 @@ fun TopNavigationBar(
                 screens.forEachIndexed { index, item ->
                     DropdownMenuItem(
                         onClick = {
+                            item.onClick?.let { it() }
                             // Handle menu item click
                             if(item.route == "ver_perfil"){
                                 val intent = Intent(context, PrActivity::class.java)
