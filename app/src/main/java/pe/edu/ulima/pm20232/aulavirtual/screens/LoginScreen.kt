@@ -1,7 +1,10 @@
 package pe.edu.ulima.pm20232.aulavirtual.screens
 
+
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+
 import android.widget.ScrollView
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*

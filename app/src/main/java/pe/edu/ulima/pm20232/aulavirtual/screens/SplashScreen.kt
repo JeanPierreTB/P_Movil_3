@@ -28,6 +28,11 @@ import pe.edu.ulima.pm20232.aulavirtual.ui.theme.Gray800
 import pe.edu.ulima.pm20232.aulavirtual.ui.theme.Orange400
 import pe.edu.ulima.pm20232.aulavirtual.ui.theme.White400
 
+@Preview
+@Composable
+fun SplashScreenPreview(){
+    SplashScreen(navigateToMain = {})
+}
 
 @Composable
 fun SplashScreen(navigateToMain: () -> Unit

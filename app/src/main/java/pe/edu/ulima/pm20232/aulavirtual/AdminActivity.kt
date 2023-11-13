@@ -1,7 +1,9 @@
 package pe.edu.ulima.pm20232.aulavirtual
 
+import android.R
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
