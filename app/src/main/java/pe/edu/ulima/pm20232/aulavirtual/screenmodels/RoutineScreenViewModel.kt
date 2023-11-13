@@ -23,7 +23,7 @@ class RoutineScreenViewModel(): ViewModel(){
     private val memberService = BackendClient.buildService(MemberService::class.java)
     private val coroutine: CoroutineScope = viewModelScope
 
-    var filtrar: Boolean by mutableStateOf(false)
+    var filtrar: Boolean by mutableStateOf(true)
     var userId: Int by mutableStateOf(0)
     var memberId: Int by mutableStateOf(0)
     var bodyPartsCount: Int by mutableStateOf(0)

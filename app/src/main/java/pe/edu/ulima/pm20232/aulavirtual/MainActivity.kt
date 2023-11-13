@@ -369,10 +369,11 @@ class MainActivity : ComponentActivity() {
                                     val dataStore = UserStorage(applicationContext)
                                     if(dataStore.getUserId.collectAsState(initial = 9999).value != 0){
                                         println(dataStore.getUserId.collectAsState(initial = 0).value)
-                                        userId = dataStore.getUserId.collectAsState(initial = 0).value!!
+                                        val userid = dataStore.getUserId.collectAsState(initial = 0).value
                                         val memberId = dataStore.getMemberId.collectAsState(initial = 0).value
                                         Log.d("ROUTER", dataStore.getUserId.collectAsState(initial = 0).value.toString())
-                                        if (userId != null && memberId != null){
+                                        if (userid != null && memberId != null){
+                                            userId = userid
                                             routineScreenViewModel.memberId = memberId
                                             routineScreenViewModel.userId = userId
                                             routineScreenViewModel.fetchBodyPartsExercises()

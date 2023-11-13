@@ -293,7 +293,7 @@ fun BottomSheet(screenWidthDp: Int, screenHeightDp: Int, viewModel: LoginScreenV
 }
 
 @Composable
-fun GoToReset(navController: NavHostController){
+fun GoToReset(viewModel: LoginScreenViewModel, navController: NavHostController){
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -311,7 +311,7 @@ fun GoToReset(navController: NavHostController){
                 modifier = Modifier.clickable {
                     println("Cambiar Contraseña")
 
-                    navController.navigate("reset")
+                    viewModel.CambiarContra(navController)
                     println("Que fue")
                 }
 
@@ -329,6 +329,6 @@ fun LoginScreen(viewModel: LoginScreenViewModel, navController: NavHostControlle
     TopScreen()
     BottomSheet(screenWidthDp, screenHeightDp, viewModel, navController)
     if(viewModel.bottomSheetCollapse){
-        GoToReset(navController)
+        GoToReset(viewModel, navController)
     }
 }

@@ -4,10 +4,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -17,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -32,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
@@ -40,6 +45,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,10 +73,10 @@ fun RoutineGrid(navController: NavController, model: RoutineScreenViewModel){
     LazyVerticalGrid(
         columns = GridCells.Fixed(4)
     ) {
-        val filteredExercises = exercises.filter { exercise ->
-            model.filtrar==false || exercisemembers.findMembersbyExerciseid(exercise.id).contains(model.userId)
-        }
-        items(filteredExercises.size) { i ->
+        /*val filteredExercises = exercises.filter { exercise ->
+            model.filtrar==false || exercise in exercises
+        }*/
+        items(exercises.size) { i ->
             Column(){
                 println(exercises[i].imageUrl)
                 Image(
@@ -148,6 +154,44 @@ fun SelectOpitionsRoutine(model: RoutineScreenViewModel) {
     Column(
         Modifier.padding(bottom = 20.dp)
     ) {
+        if (model.filtrar == true) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 28.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = model.exercisesCount.toString(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 54.sp,
+                    )
+                    Text(
+                        text = "Ejercicios Asignados",
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = model.bodyPartsCount.toString(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 54.sp,
+                    )
+                    Text(
+                        text = "Partes del Cuerpo \nEntrenadas",
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+        Divider()
+        }
         OutlinedTextField(
             value = selectedText,
             onValueChange = { selectedText = it },
@@ -226,10 +270,10 @@ fun RoutineScreen(viewModel: RoutineScreenViewModel, navController: NavHostContr
     //viewModel.fetchExercieses()
 
     Column {
-        Text("userId: ${viewModel.userId}")
-        Text("memberId: ${viewModel.memberId}")
-        Text("Ejercicios Asignados: ${viewModel.exercisesCount}")
-        Text("Partes del Cuerpo Entrenadas: ${viewModel.bodyPartsCount}")
+        //Text("userId: ${viewModel.userId}")
+        //Text("memberId: ${viewModel.memberId}")
+        //Text("Ejercicios Asignados: ${viewModel.exercisesCount}")
+        //Text("Partes del Cuerpo Entrenadas: ${viewModel.bodyPartsCount}")
         SelectOpitionsRoutine(viewModel)
         RoutineGrid(navController, viewModel)
     }

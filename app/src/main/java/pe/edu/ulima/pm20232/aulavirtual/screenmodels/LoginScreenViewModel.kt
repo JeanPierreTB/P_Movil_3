@@ -97,4 +97,12 @@ class LoginScreenViewModel(private val context: Context): ViewModel() {
         }
          */
     }
+
+    fun CambiarContra(navController: NavController): Unit{
+        coroutine.launch{
+            launch(Dispatchers.Main) {
+                navController.navigate("reset")
+            }
+        }
+    }
 }

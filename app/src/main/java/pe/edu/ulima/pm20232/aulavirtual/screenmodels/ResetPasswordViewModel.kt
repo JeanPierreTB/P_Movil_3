@@ -52,9 +52,9 @@ class ResetPasswordViewModel(private val context: Context) : ViewModel() {
 
                                 message = responseData.message
 
-                                launch(Dispatchers.Main) {
+                                /*launch(Dispatchers.Main) {
                                     navController.navigate("login")
-                                }
+                                }*/
 
                             } else {
                                 // Manejar el caso en que responseData sea nulo
