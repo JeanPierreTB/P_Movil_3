@@ -126,7 +126,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         topBar = {
                             if(
-                                currentRoute !in listOf("reset", "login","register","profile")
+                                currentRoute !in listOf("reset", "register","profile") && (currentRoute !== "login" || userId != 0)
                                 ) {
                                 val screens: List<TopBarScreen> = listOf(
                                     /*TopBarScreen(
@@ -162,7 +162,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         bottomBar = {
-                            if(currentRoute !in listOf("reset", "login","register","profile")) {
+                            if(currentRoute !in listOf("reset", "register","profile") && (currentRoute !== "login" || userId != 0)) {
                                 val screens: List<BottomBarScreen> = listOf(
                                     BottomBarScreen(
                                         route = "routine",
@@ -369,7 +369,7 @@ class MainActivity : ComponentActivity() {
                                     val dataStore = UserStorage(applicationContext)
                                     if(dataStore.getUserId.collectAsState(initial = 9999).value != 0){
                                         println(dataStore.getUserId.collectAsState(initial = 0).value)
-                                        val userId = dataStore.getUserId.collectAsState(initial = 0).value
+                                        userId = dataStore.getUserId.collectAsState(initial = 0).value!!
                                         val memberId = dataStore.getMemberId.collectAsState(initial = 0).value
                                         Log.d("ROUTER", dataStore.getUserId.collectAsState(initial = 0).value.toString())
                                         if (userId != null && memberId != null){
