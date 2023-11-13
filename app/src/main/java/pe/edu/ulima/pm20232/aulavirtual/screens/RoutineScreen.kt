@@ -86,7 +86,7 @@ fun RoutineGrid(navController: NavController, model: RoutineScreenViewModel){
                         .size(100.dp)
                         .padding(bottom = 10.dp)
                         .clickable {
-                            intValue = exercises[i].id.toInt() - exercises[0].id.toInt()
+                            intValue = i //exercises[i].id.toInt() - exercises[0].id.toInt()
 
                             ShowDetailExercise = true
 
@@ -269,7 +269,10 @@ fun RoutineScreen(viewModel: RoutineScreenViewModel, navController: NavHostContr
     //viewModel.fetchBodyPartsExercises()
     //viewModel.fetchExercieses()
 
-    Column {
+    Column (
+        modifier = Modifier.fillMaxSize().padding(bottom = 50.dp)
+    )
+    {
         //Text("userId: ${viewModel.userId}")
         //Text("memberId: ${viewModel.memberId}")
         //Text("Ejercicios Asignados: ${viewModel.exercisesCount}")

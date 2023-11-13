@@ -51,8 +51,12 @@ class RoutineScreenViewModel(): ViewModel(){
 
                     if (response.isSuccessful) {
                         val response: BodyPartExercisesCount = response.body()!!
-                        bodyPartsCount = response.bodyParts
-                        exercisesCount = response.exercises
+                        if(bodyPartsCount==0){
+                            bodyPartsCount = response.bodyParts
+                        }
+                        if(exercisesCount==0){
+                            exercisesCount = response.exercises
+                        }
                     } else {
                         // Maneja errores
                     }

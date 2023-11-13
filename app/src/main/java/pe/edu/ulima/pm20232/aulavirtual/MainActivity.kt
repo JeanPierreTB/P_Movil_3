@@ -347,8 +347,12 @@ class MainActivity : ComponentActivity() {
                                 ), content = { entry ->
                                     val memberId = entry.arguments?.getInt("member_id")!!
                                     userId = entry.arguments?.getInt("user_id")!!
-                                    routineScreenViewModel.memberId = memberId
-                                    routineScreenViewModel.userId = userId
+                                    if(routineScreenViewModel.memberId==0){
+                                        routineScreenViewModel.memberId = memberId
+                                    }
+                                    if(routineScreenViewModel.userId==0){
+                                        routineScreenViewModel.userId = userId
+                                    }
                                     routineScreenViewModel.fetchBodyPartsExercises()
                                     routineScreenViewModel.fetchBodyParts()
                                     routineScreenViewModel.fetchExercieses()
@@ -374,8 +378,12 @@ class MainActivity : ComponentActivity() {
                                         Log.d("ROUTER", dataStore.getUserId.collectAsState(initial = 0).value.toString())
                                         if (userid != null && memberId != null){
                                             userId = userid
-                                            routineScreenViewModel.memberId = memberId
-                                            routineScreenViewModel.userId = userId
+                                            if(routineScreenViewModel.memberId==0){
+                                                routineScreenViewModel.memberId = memberId
+                                            }
+                                            if(routineScreenViewModel.userId==0){
+                                                routineScreenViewModel.userId = userId
+                                            }
                                             routineScreenViewModel.fetchBodyPartsExercises()
                                             routineScreenViewModel.fetchBodyParts()
                                             routineScreenViewModel.fetchExercieses()
