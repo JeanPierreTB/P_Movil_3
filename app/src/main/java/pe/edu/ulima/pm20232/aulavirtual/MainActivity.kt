@@ -10,12 +10,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -37,16 +35,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import pe.edu.ulima.pm20232.aulavirtual.components.BottomNavigationBar
 import pe.edu.ulima.pm20232.aulavirtual.components.TopNavigationBar
 import pe.edu.ulima.pm20232.aulavirtual.configs.BottomBarScreen
@@ -87,9 +81,7 @@ class MainActivity : ComponentActivity() {
     private val homeScrennViewModel by viewModels<HomeScreenViewModel>()
     private val pokemonDetailScrennViewModel by viewModels<PokemonDetailScreenViewModel>()
     private val routineScreenViewModel by viewModels<RoutineScreenViewModel>()
-
-    //Para la conexion de la base de datos
-    private val viewModel: MemberScreenViewModel by viewModels()
+    var userId: Int by mutableStateOf(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set preferencesManager in viewModels
@@ -105,7 +97,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val blackList: List<String> = listOf("profile", "login")
+                    val blackList: List<String> = listOf( "login")
                     val currentRoute = navBackStackEntry?.destination?.route
                     var showDialog by remember { mutableStateOf(false) }
                     var showShare by remember { mutableStateOf(false) }
@@ -135,7 +127,7 @@ class MainActivity : ComponentActivity() {
                                     ),*/
                                     TopBarScreen(
                                         route = "ver_perfil",
-                                        title = "Ver Perfil",
+                                        title = "Editar Perfil",
                                     ),
                                     /*TopBarScreen(
                                         route = "pokemon",
@@ -157,7 +149,7 @@ class MainActivity : ComponentActivity() {
                                     ),
 
                                     )
-                                TopNavigationBar(navController, screens, this, dataStore)
+                                TopNavigationBar(navController, screens, this, dataStore, userId)
 
                             }
                         },
@@ -193,56 +185,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         content = {
-                            if (showDialog) {
-                                AlertDialog(
-                                    onDismissRequest = {
-                                        showDialog = false
-                                    },
-                                    title = {
-                                        Text(
-                                            text = "Integrantes del Grupo",
-                                            //color = Color.Black,
-                                            fontSize = 24.sp,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    },
-                                    text = {
-                                        /*
-                                        //Funciona pero el profe quiere solo los integrantes del grupo.
-                                        //Ademas el cuadro se ve muy grande.
-                                            LazyColumn(
-                                                contentPadding = PaddingValues(16.dp)
-                                            ) {
-                                                items(memberList) { member ->
-                                                    Text(text = "${member.code} - ${member.names}")
-                                                }
-                                            }
-                                        */
-                                        LazyColumn(
-                                            contentPadding = PaddingValues(16.dp)
-                                        ) {
-                                            val arrayIntegrantes = intArrayOf(5, 6, 7, 9, 14, 23)
-                                            lifecycleScope.launch {
-                                                arrayIntegrantes.forEach { memberId ->
-                                                    val membersMap = viewModel.fetchAllMemberTeam(memberId)
-                                                    // Ahora puedes utilizar membersMap en tu actividad
-                                                    // Por ejemplo, imprimir los valores
-                                                    membersMap.forEach { (memberId, memberInfo) ->
-                                                        println("$memberInfo")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    confirmButton = {
-
-                                    },
-                                    dismissButton = {
-
-                                    }
-                                )
-                            }
-                            if (showShare) {
+                                                       if (showShare) {
                                 AlertDialog(
                                     onDismissRequest = {
                                         showShare = false
@@ -306,15 +249,11 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            NavHost(navController, startDestination = "login") {
+                            NavHost(navController, startDestination = "splash") {
                                 composable(route = "splash") {
                                     SplashScreen {
                                         navController.navigate("login")
                                     }
-                                }
-                                composable(route = "home") {
-                                    Log.d("HOME", "home screen")
-                                    HomeScreen(navController, homeScrennViewModel)
                                 }
                                 composable(route = "pokemon") {
                                     Log.d("POKEMON", "pokemons screen")
@@ -346,12 +285,16 @@ class MainActivity : ComponentActivity() {
                                     }
                                 ), content = { entry ->
                                     val memberId = entry.arguments?.getInt("member_id")!!
-                                    val userId = entry.arguments?.getInt("user_id")!!
+                                    userId = entry.arguments?.getInt("user_id")!!
                                     routineScreenViewModel.memberId = memberId
+                                    Log.d("XFGG", "omo1")
                                     routineScreenViewModel.userId = userId
+                                    Log.d("XFGG", "omo2")
                                     routineScreenViewModel.fetchBodyPartsExercises()
+                                    Log.d("XFGG", "omo3")
                                     routineScreenViewModel.fetchBodyParts()
                                     routineScreenViewModel.fetchExercieses()
+                                    Log.d("XFGG", "omo4")
                                     RoutineScreen(routineScreenViewModel, navController)
                                 })
                                 composable(route = "pokemon/edit?pokemon_id={pokemon_id}", arguments = listOf(
@@ -366,7 +309,9 @@ class MainActivity : ComponentActivity() {
                                 })
                                 composable(route = "login") {
                                     Log.d("ROUTER", "login")
+
                                     val dataStore = UserStorage(applicationContext)
+                                    println(dataStore.getUserId.collectAsState(initial = 0).value)
                                     if(dataStore.getUserId.collectAsState(initial = 9999).value != 0){
                                         println(dataStore.getUserId.collectAsState(initial = 0).value)
                                         val userId = dataStore.getUserId.collectAsState(initial = 0).value

@@ -38,7 +38,6 @@ class PokemonScreenViewModel: ViewModel() {
         coroutine.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    //val response = generationService.fetchAll().execute()
                     val response = generationService.fetchAll().execute()
                     if (response.isSuccessful) {
                         val list: List<Generation> = response.body()!!

@@ -1,5 +1,6 @@
 package pe.edu.ulima.pm20232.aulavirtual.screenmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -46,13 +47,16 @@ class RoutineScreenViewModel(): ViewModel(){
     fun fetchBodyPartsExercises(){
         coroutine.launch {
             try {
+                Log.d("XFGG", "pato1")
                 withContext(Dispatchers.IO) {
+                    Log.d("XFGG", "pato2")
                     val response = memberService.exercisesBodyParts(memberId).execute()
-
+                    Log.d("XFGG", "pato3")
                     if (response.isSuccessful) {
                         val response: BodyPartExercisesCount = response.body()!!
                         bodyPartsCount = response.bodyParts
                         exercisesCount = response.exercises
+                        Log.d("XFGG", "pato4")
                     } else {
                         // Maneja errores
                     }
